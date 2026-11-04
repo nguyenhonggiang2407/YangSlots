@@ -1,12 +1,12 @@
 # YangSlots · Đúng lịch. Đủ chỗ.
 
-[![YangSlots checks](https://github.com/nguyenhonggiang2407/DTDD/actions/workflows/ci.yml/badge.svg?branch=yangslots)](https://github.com/nguyenhonggiang2407/DTDD/actions?query=branch%3Ayangslots)
+[![YangSlots checks](https://github.com/nguyenhonggiang2407/YangSlots/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nguyenhonggiang2407/YangSlots/actions/workflows/ci.yml)
 
 **Chọn tài nguyên → chọn giờ → giữ chỗ năm phút → xác nhận → xuất lịch.**
 
 Ứng dụng thực hành **Java Backend / Full-stack** của **Nguyễn Hồng Giang (Yang)**. Java 17, Spring Boot 4.1.2, Spring JDBC, Bean Validation và H2 dạng tệp. Giao diện JavaScript thuần, tiếng Việt.
 
-> Đây là ứng dụng độc lập trên nhánh **yangslots** của DTDD. Nhánh mặc định chứa YangCareer. Chọn đúng nhánh khi xem/tải mã. Chưa triển khai website công khai.
+Repository độc lập được tách từ nhánh [yangslots của DTDD](https://github.com/nguyenhonggiang2407/DTDD/tree/yangslots), giữ nguyên lịch sử và nguồn kế thừa. Nhánh cũ vẫn được giữ; xem [biên bản chuyển repository](docs/repository-migration.md). Chưa triển khai website công khai.
 
 ![YangSlots desktop](docs/screenshots/desktop.png)
 
@@ -15,8 +15,8 @@
 Cần **JDK 17 trở lên**. Maven Wrapper đã có trong mã nguồn.
 
 ```sh
-git clone --branch yangslots --single-branch https://github.com/nguyenhonggiang2407/DTDD.git yangslots
-cd yangslots
+git clone https://github.com/nguyenhonggiang2407/YangSlots.git
+cd YangSlots
 ./mvnw spring-boot:run
 ```
 
