@@ -186,6 +186,19 @@ CI dùng JDK 17 và Node.js 24, build JAR, chạy các bộ test, chụp giao di
 
 </details>
 
+## Đọc nhanh phần backend
+
+| Điểm bắt đầu                          | Bằng chứng để đối chiếu                                                                                                                                                                             |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Transaction, khóa workspace và replay | [BookingService](src/main/java/vn/yang/slots/BookingService.java): `hold`, `lockOwner`, `spans`                                                                                                     |
+| Peak sức chứa theo khoảng thời gian   | [Rules](src/main/java/vn/yang/slots/Rules.java): `peak`; test `overlapSweepAcceptsNonConcurrentLoadsAndAdjacentIntervals`                                                                           |
+| Request đồng thời và cùng key         | [ReservationsTest](src/test/java/vn/yang/slots/ReservationsTest.java): `concurrentHttpReservationsNeverExceedCapacity`, `concurrentSameKeyReturnsOneReservation`                                    |
+| Hết hạn và xóa tài nguyên             | [ReservationsTest](src/test/java/vn/yang/slots/ReservationsTest.java): `expiredHoldsReleaseCapacityWithoutScheduledJobsAndCannotConfirm`, `deletionCascadesBookingsAndRetainsIdempotencyTombstones` |
+| Ràng buộc dữ liệu và tombstone        | [schema.sql](src/main/resources/schema.sql): khóa `(owner,request_key)`, `ON DELETE SET NULL`                                                                                                       |
+| Khởi động lại vẫn giữ dữ liệu         | [PersistenceTest](src/test/java/vn/yang/slots/PersistenceTest.java)                                                                                                                                 |
+
+[Workflow hiện tại](.github/workflows/ci.yml) và [kết quả Actions](https://github.com/nguyenhonggiang2407/YangSlots/actions/workflows/ci.yml) là đường kiểm tra build, browser và Docker. Các test đồng thời trên H2 kiểm tra những tình huống hữu hạn; chưa chứng minh tải production, PostgreSQL hoặc nhiều instance. Nguồn tham khảo và lịch sử tách repo được giữ ở phần [Nguồn và giấy phép](#nguồn-và-giấy-phép) và [biên bản chuyển repository](docs/repository-migration.md).
+
 ## Cấu trúc
 
 | Thành phần              | Trách nhiệm                                                            |
