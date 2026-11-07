@@ -163,6 +163,8 @@ Ngày ví dụ chỉ minh họa định dạng; thay bằng ngày hợp lệ tro
 
 ## Kiểm thử
 
+[Biên bản YS01](docs/YS01_VALIDATION.md) ghi kết quả chạy lại Java và trình duyệt ở revision đã kiểm tra.
+
 ```sh
 ./mvnw verify
 npm ci
