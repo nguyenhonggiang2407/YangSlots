@@ -1,0 +1,55 @@
+{
+  "collected_at": "2026-11-06T14:53:26.060Z",
+  "application_commit": "f8a1cb3350d3979bf9f297edcc8849c231df3709",
+  "environment": {
+    "os": "Windows",
+    "java": "Temurin 17.0.21+9",
+    "node": "v24.19.0"
+  },
+  "command": ".\\mvnw.cmd -B verify",
+  "exit_code": 0,
+  "database": "Isolated H2 only; no external database",
+  "total": {
+    "tests": 24,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "suite": "vn.yang.slots.PersistenceTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 8.954
+    },
+    {
+      "suite": "vn.yang.slots.ReservationsTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 9.812
+    },
+    {
+      "suite": "vn.yang.slots.RulesTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.123
+    }
+  ],
+  "browser": {
+    "command": "npm run test:ui",
+    "exit_code": 0,
+    "passed": 6,
+    "failed": 0,
+    "scope": "Actual local Java application with isolated temporary H2"
+  },
+  "limitations": [
+    "Docker is not installed locally",
+    "No public deployment; no PostgreSQL/multiple-instance proof"
+  ]
+}
