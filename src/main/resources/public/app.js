@@ -90,23 +90,23 @@ async function api(path, method = 'GET', body, { headers = {}, download = false 
       },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
+    if (response.ok) {
+      if (download) return response.blob();
+      if (response.status === 204) return null;
+      const result = await response.json();
+      syncTime(result.serverTime);
+      return result;
+    }
   } catch {
     const failure = new Error('Chưa nhận được phản hồi từ máy chủ. Hãy thử lại.');
-    failure.network = true;
+    failure.responseUnavailable = true;
     throw failure;
   }
-  if (!response.ok) {
-    if (response.status === 401) $('expired').hidden = false;
-    const problem = await response.json().catch(() => ({})),
-      failure = new Error(problem.error || 'Không thể xử lý yêu cầu. Hãy thử lại.');
-    failure.status = response.status;
-    throw failure;
-  }
-  if (download) return response.blob();
-  if (response.status === 204) return null;
-  const result = await response.json();
-  syncTime(result.serverTime);
-  return result;
+  if (response.status === 401) $('expired').hidden = false;
+  const problem = await response.json().catch(() => ({})),
+    failure = new Error(problem.error || 'Không thể xử lý yêu cầu. Hãy thử lại.');
+  failure.status = response.status;
+  throw failure;
 }
 async function task(button, action, errorId) {
   if (button && state.busy.has(button)) return;
@@ -538,7 +538,7 @@ $('holdForm').addEventListener('submit', (event) => {
       try {
         data = await api('/api/holds', 'POST', body, { headers: { 'Idempotency-Key': key } });
       } catch (error) {
-        if (state.requestKey === key && (error.network || error.status >= 500)) {
+        if (state.requestKey === key && (error.responseUnavailable || error.status >= 500)) {
           state.unknown = true;
           controls();
         }
