@@ -187,6 +187,37 @@ test('lost response can be recovered with the same intent without creating a sec
   await close(page);
   await expect(page.locator('#statConfirmed')).toHaveText('1');
 });
+test('a truncated success response can recover the committed hold with the original key', async (t) => {
+  const { page, context } = await workspace(t);
+  await create(page, 'Truncated response room');
+  await choose(page);
+  const keys = [];
+  let committed;
+  await page.route('**/api/holds', async (route) => {
+    keys.push(route.request().headers()['idempotency-key']);
+    if (keys.length > 1) return route.continue();
+    const response = await route.fetch();
+    assert.equal(response.status(), 201);
+    committed = (await response.json()).reservation;
+    await route.fulfill({ status: 201, contentType: 'application/json', body: '{"reservation":' });
+  });
+  await page.locator('#holdBtn').click();
+  await expect(page.locator('#unknownNote')).toBeVisible();
+
+  await page.locator('#refreshBtn').click();
+  await expect(page.locator('.booking-row')).toHaveCount(1);
+  await expect(page.locator('#slotGrid .slot[data-time="10:00"]')).toBeDisabled();
+  await page.getByRole('button', { name: '↻ Nhận lại kết quả' }).click();
+  await expect(page.locator('#reservationDialog')).toBeVisible();
+  await expect(page.locator('#replayedNotice')).toBeVisible();
+  assert.deepEqual(keys, [keys[0], keys[0]]);
+
+  const response = await context.request.get(base + '/api/reservations');
+  assert.deepEqual(
+    (await response.json()).reservations.map((reservation) => reservation.id),
+    [committed.id],
+  );
+});
 test('literal user text, formula-safe CSV and invalid date controls remain safe', async (t) => {
   const { page } = await workspace(t);
   const name = 'Phòng <img src=x onerror=window.hacked=1>';
