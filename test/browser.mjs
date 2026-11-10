@@ -114,6 +114,30 @@ async function create(page, name = 'Thiết bị dùng thử', capacity = 1) {
   await expect(page.locator('#resourceName')).toHaveText(name);
   await expect(page.locator('#slotGrid .slot[data-time="10:00"]')).toBeEnabled();
 }
+test('keyboard slot selection keeps focus and the named reservation dialog has a focused close action', async (t) => {
+  const { page } = await workspace(t, { width: 390, height: 844 });
+  await demo(page);
+  const slot = page.locator('#slotGrid .slot[data-time="10:00"]');
+  await slot.focus();
+  await page.keyboard.press('Enter');
+  await expect(slot).toHaveAttribute('aria-pressed', 'true');
+  await expect(slot).toBeFocused();
+
+  await page.locator('#holdTitle').fill('Đặt bằng bàn phím');
+  await page.locator('#holdBtn').focus();
+  await page.keyboard.press('Enter');
+  const dialog = page.getByRole('dialog', { name: 'Đặt bằng bàn phím' });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('status')).toHaveText('Đang giữ chỗ');
+  await page.locator('#confirmBookingBtn').focus();
+  await page.keyboard.press('Enter');
+  await expect(dialog.getByRole('status')).toHaveText('Đã xác nhận');
+  await expect(page.locator('#closeFinalBtn')).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(dialog).toBeHidden();
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+});
+
 test('sample calendar → five-minute hold → confirmation → capacity and CSV/ICS export', async (t) => {
   const { page } = await workspace(t);
   await demo(page);

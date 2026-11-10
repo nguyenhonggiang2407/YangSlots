@@ -203,7 +203,7 @@ function renderStats() {
   ).length;
   $('statHeld').textContent = state.bookings.filter((b) => effective(b) === 'HELD').length;
 }
-function renderSlots() {
+function renderSlots(focusStart) {
   const grid = $('slotGrid');
   grid.replaceChildren();
   $('dayCaption').textContent = dayText($('dayInput').value || state.today);
@@ -229,10 +229,10 @@ function renderSlots() {
     button.addEventListener('click', () => {
       state.selectedStart = s.startsAt;
       newIntent();
-      renderSlots();
-      selectedInfo();
+      renderSlots(s.startsAt);
     });
     grid.append(button);
+    if (s.startsAt === focusStart && !button.disabled) button.focus({ preventScroll: true });
   }
   selectedInfo();
   controls();
@@ -386,8 +386,11 @@ function renderReservation() {
   if (!b) return;
   const status = effective(b);
   $('dialogTitle').textContent = b.title;
-  $('dialogStatus').textContent = labels[status];
-  $('dialogStatus').className = 'status ' + status.toLowerCase();
+  const statusBadge = $('dialogStatus');
+  if (statusBadge.textContent !== labels[status]) {
+    statusBadge.textContent = labels[status];
+    statusBadge.className = 'status ' + status.toLowerCase();
+  }
   $('replayedNotice').hidden = !state.replayed;
   $('dialogFacts').replaceChildren();
   for (const [key, value] of [
@@ -566,6 +569,7 @@ $('confirmBookingBtn').addEventListener('click', () =>
       newIntent(true);
       await refresh();
       renderReservation();
+      if ($('reservationDialog').open) $('closeFinalBtn').focus();
       toast('Đã xác nhận lượt đặt.');
     },
     'reservationError',
@@ -582,6 +586,7 @@ $('cancelBookingBtn').addEventListener('click', () =>
       newIntent();
       await refresh();
       renderReservation();
+      if ($('reservationDialog').open) $('closeFinalBtn').focus();
       toast('Đã hủy lượt đặt và trả lại chỗ.');
     },
     'reservationError',

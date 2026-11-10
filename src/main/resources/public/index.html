@@ -248,10 +248,10 @@
         </main>
       </div>
     </div>
-    <dialog id="createDialog">
+    <dialog id="createDialog" aria-labelledby="createTitle">
       <form id="createForm">
         <div class="dialog-head">
-          <h2>Thêm tài nguyên</h2>
+          <h2 id="createTitle">Thêm tài nguyên</h2>
           <button
             type="button"
             class="icon-button"
@@ -265,6 +265,7 @@
         <label
           >Tên tài nguyên<input
             id="createName"
+            autofocus
             required
             maxlength="100"
             placeholder="Ví dụ: Phòng họp Lotus" /></label
@@ -286,7 +287,7 @@
         </div>
       </form>
     </dialog>
-    <dialog id="reservationDialog" class="reservation-dialog">
+    <dialog id="reservationDialog" class="reservation-dialog" aria-labelledby="dialogTitle">
       <div class="dialog-head">
         <div>
           <div class="eyebrow">YOUR RESERVATION</div>
@@ -297,7 +298,7 @@
         </button>
       </div>
       <div class="reservation-state">
-        <span id="dialogStatus" class="status"></span
+        <span id="dialogStatus" class="status" role="status"></span
         ><span id="replayedNotice" hidden>Đã nhận lại yêu cầu trước</span>
       </div>
       <dl id="dialogFacts"></dl>
@@ -315,10 +316,10 @@
         </button>
       </div>
     </dialog>
-    <dialog id="renameDialog">
+    <dialog id="renameDialog" aria-labelledby="renameTitle">
       <form id="renameForm">
         <div class="dialog-head">
-          <h2>Đổi tên tài nguyên</h2>
+          <h2 id="renameTitle">Đổi tên tài nguyên</h2>
           <button
             type="button"
             class="icon-button"
@@ -328,7 +329,7 @@
             ×
           </button>
         </div>
-        <label>Tên mới<input id="renameName" required maxlength="100" /></label>
+        <label>Tên mới<input id="renameName" autofocus required maxlength="100" /></label>
         <p id="renameError" class="form-error" role="alert" hidden></p>
         <div class="dialog-actions">
           <button type="button" class="button outline" data-close="renameDialog">Hủy</button
@@ -336,9 +337,9 @@
         </div>
       </form>
     </dialog>
-    <dialog id="deleteDialog">
+    <dialog id="deleteDialog" aria-labelledby="deleteTitle" aria-describedby="deleteMessage">
       <div class="dialog-head">
-        <h2>Xóa tài nguyên?</h2>
+        <h2 id="deleteTitle">Xóa tài nguyên?</h2>
         <button class="icon-button" data-close="deleteDialog" aria-label="Đóng xóa tài nguyên">
           ×
         </button>
@@ -346,7 +347,7 @@
       <p id="deleteMessage"></p>
       <p id="deleteError" class="form-error" role="alert" hidden></p>
       <div class="dialog-actions">
-        <button class="button outline" data-close="deleteDialog">Giữ lại</button
+        <button class="button outline" data-close="deleteDialog" autofocus>Giữ lại</button
         ><button class="button danger" id="deleteSubmit">Xóa tài nguyên</button>
       </div>
     </dialog>
