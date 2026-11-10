@@ -28,6 +28,8 @@ mvnw.cmd spring-boot:run
 
 Mở **http://127.0.0.1:3150**. Chọn **Thử lịch mẫu** để tạo hai tài nguyên và ba lịch đặt giả lập cho ngày mai. Với Phòng họp Lotus, 09:00–10:00 đã đặt; chọn 10:00 để thử giữ chỗ rồi xác nhận.
 
+Lịch mẫu nằm trong workspace riêng theo cookie và không cần tài khoản. Dùng Tab để tới ô giờ rồi nhấn Enter. Ô đã chọn giữ focus. Hộp lượt đặt có tên và trạng thái để công nghệ hỗ trợ đọc, sau khi xác nhận hoặc hủy thì focus chuyển đến nút Đóng.
+
 Hoặc dùng Docker, không cần cài JDK/Maven trên máy:
 
 ```sh
