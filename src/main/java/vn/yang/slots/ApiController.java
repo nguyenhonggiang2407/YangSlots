@@ -35,7 +35,13 @@ class ApiController {
     return Map.of("status", "ok");
   }
 
-  @GetMapping({"/", "/assets/app.js", "/assets/styles.css", "/assets/favicon.svg"})
+  @GetMapping({
+    "/",
+    "/assets/app.js",
+    "/assets/styles.css",
+    "/assets/favicon.svg",
+    "/assets/meeting-room.webp"
+  })
   ResponseEntity<byte[]> page(HttpServletRequest req) throws java.io.IOException {
     Map<String, String> names =
         Map.of(
@@ -46,16 +52,21 @@ class ApiController {
             "/assets/styles.css",
             "styles.css",
             "/assets/favicon.svg",
-            "favicon.svg");
+            "favicon.svg",
+            "/assets/meeting-room.webp",
+            "meeting-room.webp");
     String name = names.get(req.getRequestURI()),
         mime =
-            name.endsWith(".html")
-                ? "text/html"
-                : name.endsWith(".css")
-                    ? "text/css"
-                    : name.endsWith(".js") ? "text/javascript" : "image/svg+xml";
+            switch (name) {
+              case "index.html" -> "text/html;charset=UTF-8";
+              case "styles.css" -> "text/css;charset=UTF-8";
+              case "app.js" -> "text/javascript;charset=UTF-8";
+              case "favicon.svg" -> "image/svg+xml;charset=UTF-8";
+              case "meeting-room.webp" -> "image/webp";
+              default -> throw new IllegalStateException("Unknown public asset");
+            };
     return ResponseEntity.ok()
-        .contentType(MediaType.parseMediaType(mime + ";charset=UTF-8"))
+        .contentType(MediaType.parseMediaType(mime))
         .body(new ClassPathResource("public/" + name).getContentAsByteArray());
   }
 

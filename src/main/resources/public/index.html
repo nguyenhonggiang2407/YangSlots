@@ -14,8 +14,8 @@
     <div class="app">
       <aside>
         <a class="brand" href="/"
-          ><span class="brand-mark">▦</span
-          ><span>Yang<span>Slots</span><small>SPACE FOR GOOD PLANS.</small></span></a
+          ><span class="brand-mark" aria-hidden="true">▦</span
+          ><span>Yang<span>Slots</span></span></a
         >
         <div class="workspace">
           <span class="avatar">NG</span>
@@ -29,8 +29,8 @@
         </nav>
         <div class="side-tip">
           <span>◷</span>
-          <h3>Kế hoạch tốt<br />cần một chỗ trống.</h3>
-          <p>Chọn khung giờ phù hợp. Giữ chỗ năm phút để hoàn tất xác nhận.</p>
+          <h3>Giờ đặt lịch</h3>
+          <p>Mỗi khung bắt đầu cách nhau 15 phút. Giữ chỗ có hiệu lực trong năm phút.</p>
           <small>08:00–20:00 · UTC+7</small>
         </div>
         <footer class="owner">
@@ -48,45 +48,54 @@
           <div id="expired" class="error-banner" hidden>
             Workspace hết hạn. Hãy tải lại trang để mở phiên mới.
           </div>
-          <div class="hero">
-            <div>
-              <div class="eyebrow">RESERVE A LITTLE ROOM FOR YOUR IDEAS</div>
-              <h1>Đúng lịch.<br /><span>Đủ chỗ.</span></h1>
-              <p>Phòng họp, bàn làm việc hay thiết bị — sắp xếp một cách rõ ràng.</p>
+          <section class="hero" aria-labelledby="pageTitle">
+            <div class="hero-content">
+              <h1 id="pageTitle">Đặt lịch tài nguyên</h1>
+              <p>
+                Kiểm tra giờ trống cho phòng họp, bàn làm việc hoặc thiết bị. Giữ chỗ năm phút để
+                xác nhận lịch.
+              </p>
+              <div class="hero-actions">
+                <button class="button primary" data-create disabled>＋ Thêm tài nguyên</button>
+                <button id="demoBtn" class="button outline" disabled>Thử lịch mẫu</button>
+              </div>
             </div>
-            <div class="hero-actions">
-              <button id="demoBtn" class="button ghost" disabled>Thử lịch mẫu ↗</button
-              ><button class="button primary" data-create disabled>＋ Thêm tài nguyên</button>
-            </div>
-          </div>
-          <section class="stats" aria-label="Thống kê">
+            <figure class="hero-photo">
+              <img
+                src="/assets/meeting-room.webp"
+                alt="Phòng họp với bàn gỗ dài và ghế làm việc"
+                width="1000"
+                height="750"
+              />
+              <figcaption>
+                Ảnh minh họa ·
+                <a
+                  href="https://www.pexels.com/photo/conference-table-and-chairs-in-an-empty-office-17739892/"
+                  >Aheed Baithul Nafia / Pexels</a
+                >
+              </figcaption>
+            </figure>
+          </section>
+          <section class="stats" aria-label="Thống kê tài nguyên và lịch đang xem">
             <div>
               <span>▦</span>
-              <div><strong id="statResources">0</strong><small>Tài nguyên riêng</small></div>
+              <div><strong id="statResources">0</strong><small>Tài nguyên</small></div>
             </div>
             <div>
               <span class="green">✓</span>
-              <div>
-                <strong id="statConfirmed">0</strong><small>Đã xác nhận trong danh sách</small>
-              </div>
+              <div><strong id="statConfirmed">0</strong><small>Đã xác nhận</small></div>
             </div>
             <div>
               <span class="orange">◷</span>
-              <div><strong id="statHeld">0</strong><small>Đang giữ chỗ trong danh sách</small></div>
+              <div><strong id="statHeld">0</strong><small>Đang giữ chỗ</small></div>
             </div>
           </section>
           <section id="empty" class="empty">
-            <div class="empty-icon">▦</div>
-            <h2>Dành một chỗ cho kế hoạch mới</h2>
+            <h2>Chưa có tài nguyên</h2>
             <p>
-              Thêm tài nguyên và sức chứa, rồi chọn một khung giờ.<br />Bộ mẫu có hai tài nguyên và
-              ba lịch đặt giả lập.
+              Thêm phòng, bàn hoặc thiết bị của bạn. Lịch mẫu có hai tài nguyên và ba lượt đặt giả
+              lập.
             </p>
-            <button class="button primary" data-create disabled>Thêm tài nguyên đầu tiên</button>
-            <div class="empty-steps">
-              <span><b>01</b> Chọn giờ</span><span><b>02</b> Giữ chỗ 5 phút</span
-              ><span><b>03</b> Xác nhận</span>
-            </div>
           </section>
           <section id="workbench" hidden>
             <div class="resource-heading">
@@ -108,8 +117,7 @@
               <section class="schedule card">
                 <div class="card-head">
                   <div>
-                    <div class="eyebrow">01 / CHOOSE YOUR TIME</div>
-                    <h3>Khoảng trống cho bạn</h3>
+                    <h3>Khung giờ còn chỗ</h3>
                     <p>Khung 15 phút · Thời gian hiển thị tại Việt Nam.</p>
                   </div>
                   <span class="timezone">UTC+7</span>
@@ -157,7 +165,6 @@
               <section class="booking-card card">
                 <div class="card-head">
                   <div>
-                    <div class="eyebrow">02 / MAKE A PLAN</div>
                     <h3>Giữ chỗ của bạn</h3>
                     <p>Bạn có năm phút để xác nhận.</p>
                   </div>
@@ -207,7 +214,6 @@
             <section class="reservations card">
               <div class="card-head">
                 <div>
-                  <div class="eyebrow">YOUR PLANS, IN ONE PLACE</div>
                   <h3>Lịch đặt của bạn</h3>
                   <p id="listMeta"></p>
                 </div>

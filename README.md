@@ -8,7 +8,11 @@
 
 Repository độc lập được tách từ nhánh [yangslots của DTDD](https://github.com/nguyenhonggiang2407/DTDD/tree/yangslots), giữ nguyên lịch sử và nguồn kế thừa. Nhánh cũ vẫn được giữ; xem [biên bản chuyển repository](docs/repository-migration.md). Chưa triển khai website công khai.
 
-![YangSlots desktop](docs/screenshots/desktop.png)
+![Màn hình bắt đầu của YangSlots trên desktop](docs/screenshots/intro-desktop.png)
+
+[Giao diện đặt lịch trên desktop](docs/screenshots/desktop.png) · [Màn hình bắt đầu trên điện thoại](docs/screenshots/intro-mobile.png)
+
+Ảnh phòng họp ở màn hình bắt đầu là ảnh minh họa của [Aheed Baithul Nafia trên Pexels](https://www.pexels.com/photo/conference-table-and-chairs-in-an-empty-office-17739892/) theo [giấy phép Pexels](https://www.pexels.com/license/). Ứng dụng phục vụ bản WebP 1000 × 750 đã giảm kích thước từ chính máy chủ. Lịch mẫu và tên phòng trong ứng dụng là dữ liệu giả lập.
 
 ## Chạy thử
 

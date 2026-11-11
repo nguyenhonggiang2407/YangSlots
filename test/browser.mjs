@@ -102,6 +102,8 @@ async function capture(page, name, fullPage = true) {
     await page.locator('#main').focus();
     await page.locator('#main').evaluate((el) => el.blur());
     await page.evaluate(() => scrollTo(0, 0));
+    if (await page.locator('#workbench').isVisible())
+      await expect(page.locator('#slotSummary')).toHaveText(/khung còn đủ chỗ/);
   }
   await page.screenshot({ path: 'docs/screenshots/' + name + '.png', fullPage });
 }
@@ -114,6 +116,37 @@ async function create(page, name = 'Thiết bị dùng thử', capacity = 1) {
   await expect(page.locator('#resourceName')).toHaveText(name);
   await expect(page.locator('#slotGrid .slot[data-time="10:00"]')).toBeEnabled();
 }
+test('the photo is local, credited and gives way to the booking workbench', async (t) => {
+  for (const width of [320, 390, 1440]) {
+    const { page } = await workspace(t, { width, height: 900 });
+    const photo = page.getByRole('img', { name: 'Phòng họp với bàn gỗ dài và ghế làm việc' });
+    const source = page.getByRole('link', { name: 'Aheed Baithul Nafia / Pexels' });
+    const sample = page.getByRole('button', { name: 'Thử lịch mẫu' });
+    await expect(photo).toBeVisible();
+    assert.equal(await photo.evaluate((img) => img.decode().then(() => img.naturalWidth)), 1000);
+    const response = await page.request.get(base + '/assets/meeting-room.webp');
+    assert.equal(response.headers()['content-type'], 'image/webp');
+    assert.equal(response.headers()['set-cookie'], undefined);
+    await expect(source).toHaveAttribute('href', /^https:\/\/www\.pexels\.com\/photo\//);
+    assert.deepEqual(
+      await page.evaluate(() =>
+        performance
+          .getEntriesByType('resource')
+          .filter((entry) => new URL(entry.name).origin !== location.origin)
+          .map((entry) => entry.name),
+      ),
+      [],
+    );
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    if (width !== 320) await capture(page, width === 390 ? 'intro-mobile' : 'intro-desktop');
+    await sample.focus();
+    await expect(sample).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#resourceName')).toHaveText('Phòng họp Lotus');
+    await expect(photo).toBeHidden();
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  }
+});
 test('sample calendar → five-minute hold → confirmation → capacity and CSV/ICS export', async (t) => {
   const { page } = await workspace(t);
   await demo(page);
