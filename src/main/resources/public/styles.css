@@ -218,40 +218,6 @@ aside {
   color: var(--muted);
   padding: 14px 7px;
 }
-.side-tip {
-  border: 1px solid #e1e5f0;
-  border-radius: 11px;
-  background: #f4f5fc;
-  padding: 20px 16px;
-  margin-top: 40px;
-}
-.side-tip > span {
-  display: inline-block;
-  width: 30px;
-  height: 32px;
-  border-radius: 8px;
-  background: #e4e8f8;
-  color: #7282b9;
-  text-align: center;
-  font-size: 25px;
-}
-.side-tip h3 {
-  font-size: 18px;
-  font-weight: 500;
-  color: #6372a4;
-  margin-top: 15px;
-  line-height: 1.5;
-}
-.side-tip p {
-  font-size: 11px;
-  line-height: 1.9;
-  color: #8a94ac;
-  margin: 15px 0 22px;
-}
-.side-tip small {
-  font-size: 8px;
-  color: #8995b2;
-}
 .owner {
   display: flex;
   align-items: center;
@@ -302,11 +268,11 @@ main {
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
   align-items: center;
   gap: clamp(20px, 3vw, 48px);
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   padding: clamp(20px, 3vw, 36px);
   border: 1px solid #d8e0f1;
   border-radius: 16px;
-  background: #edf1fa;
+  background: #eef1f9;
 }
 main:has(#empty[hidden]) .hero {
   display: block;
@@ -350,6 +316,10 @@ main:has(#empty[hidden]) .hero-content > p {
   font-size: 14px;
   color: var(--muted);
   line-height: 1.6;
+}
+.hero .sample-note {
+  margin-top: 10px;
+  font-size: 12px;
 }
 .hero-actions {
   display: flex;
@@ -437,60 +407,25 @@ main:has(#empty[hidden]) .hero-content > p {
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 17px;
-  margin-bottom: 28px;
+  background: #f7f8fc;
+  border-bottom: 1px solid var(--line);
 }
 .stats > div {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 22px;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 11px;
+  gap: 9px;
+  padding: 14px 22px;
 }
-.stats > div > span {
-  width: 38px;
-  height: 41px;
-  display: grid;
-  place-items: center;
-  background: #eeeffa;
-  color: #8492bd;
-  border-radius: 9px;
-  font-size: 24px;
-}
-.stats .green {
-  background: #e9f2ed;
-  color: #85a491;
-}
-.stats .orange {
-  background: #fcf1e2;
-  color: #c8a37b;
+.stats > div + div {
+  border-left: 1px solid var(--line);
 }
 .stats strong {
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 650;
 }
 .stats small {
-  display: block;
   font-size: 12px;
-  color: #6a7891;
-  margin-top: 5px;
-}
-.empty {
-  border: 1px dashed #bdc8df;
-  background: #fcfdff;
-  border-radius: 12px;
-  padding: 22px;
-}
-.empty h2 {
-  font-size: 18px;
-}
-.empty p {
-  font-size: 13px;
   color: var(--muted);
-  line-height: 1.6;
-  margin-top: 7px;
 }
 .resource-heading {
   display: flex;
@@ -759,16 +694,12 @@ main:has(#empty[hidden]) .hero-content > p {
   margin-top: 11px;
 }
 .rule-footer {
-  display: flex;
-  gap: 12px;
   border-top: 1px solid var(--line);
   background: #fcfdff;
   padding: 20px 23px;
 }
-.rule-footer > span {
-  font: 10px monospace;
-  color: #a5b1cb;
-  margin-top: 3px;
+.booking-next.button {
+  display: none;
 }
 .rule-footer strong {
   font-size: 11px;
@@ -1120,10 +1051,6 @@ dd {
     padding-left: 17px;
     padding-right: 17px;
   }
-  .stats > div {
-    padding: 18px 16px;
-    gap: 10px;
-  }
   .booking-row {
     grid-template-columns: 35px minmax(0, 1fr) 120px 90px;
     gap: 9px;
@@ -1166,16 +1093,14 @@ dd {
   .booking-card .help {
     grid-column: 1/-1;
   }
-  .stats {
-    gap: 10px;
+  .booking-next.button {
+    display: flex;
+    width: calc(100% - 46px);
+    margin: 0 23px 16px;
+    min-height: 44px;
   }
-  .stats > div > span {
-    width: 30px;
-    height: 35px;
-    font-size: 22px;
-  }
-  .stats strong {
-    font-size: 22px;
+  #holdTitle {
+    scroll-margin-block: 20px;
   }
   .booking-row {
     grid-template-columns: 32px minmax(0, 1fr) 105px 88px;
@@ -1192,7 +1117,7 @@ dd {
     display: block;
   }
   aside {
-    padding: 17px 20px;
+    padding: 12px 20px;
     border-right: 0;
     border-bottom: 1px solid var(--line);
     flex-direction: row;
@@ -1205,41 +1130,39 @@ dd {
   .workspace,
   .side-label,
   #resourceList,
-  .side-tip,
   .owner {
     display: none;
   }
   header {
-    height: 47px;
+    height: 40px;
     padding: 0 21px;
-    font-size: 9px;
+    font-size: 11px;
   }
   .private {
-    font-size: 8px;
+    font-size: 10px;
   }
   main {
-    padding: 28px 21px 0;
+    padding: 20px 18px 0;
   }
   .hero {
     grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
   }
-  .stats {
-    gap: 9px;
-    margin-bottom: 24px;
+  .hero-photo img {
+    aspect-ratio: 2 / 1;
+  }
+  .hero-actions {
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .hero-actions .button {
+    padding-inline: 12px;
   }
   .stats > div {
     align-items: flex-start;
-    padding: 12px 9px;
-  }
-  .stats strong {
-    font-size: 21px;
-  }
-  .stats small {
-    font-size: 11px;
-    margin-top: 4px;
-  }
-  .stats > div > span {
-    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
   }
   .resource-heading {
     align-items: flex-start;
@@ -1267,7 +1190,7 @@ dd {
     font-size: 21px;
   }
   .card-head p {
-    font-size: 9px;
+    font-size: 11px;
   }
   .slot-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1305,6 +1228,10 @@ dd {
     padding: 18px;
     font-size: 8px;
     gap: 16px;
+  }
+  .booking-next.button {
+    width: calc(100% - 36px);
+    margin-inline: 18px;
   }
   .schedule-note {
     padding: 15px 18px;
@@ -1388,9 +1315,6 @@ dd {
   .page-foot > span {
     display: block;
     margin: 5px 0;
-  }
-  .empty {
-    padding: 18px;
   }
   dialog {
     padding: 23px;

@@ -19,7 +19,7 @@
         >
         <div class="workspace">
           <span class="avatar">NG</span>
-          <div><strong>Giang’s workspace</strong><small>Không gian đặt lịch cá nhân</small></div>
+          <div><strong>Lịch cá nhân</strong><small>Phiên đặt lịch riêng</small></div>
         </div>
         <div class="side-label">
           TÀI NGUYÊN <button data-create disabled aria-label="Thêm tài nguyên">＋</button>
@@ -27,12 +27,6 @@
         <nav id="resourceList" aria-label="Tài nguyên">
           <p class="muted">Chưa có tài nguyên.</p>
         </nav>
-        <div class="side-tip">
-          <span>◷</span>
-          <h3>Giờ đặt lịch</h3>
-          <p>Mỗi khung bắt đầu cách nhau 15 phút. Giữ chỗ có hiệu lực trong năm phút.</p>
-          <small>08:00–20:00 · UTC+7</small>
-        </div>
         <footer class="owner">
           <span class="avatar">NG</span>
           <div><strong>Nguyễn Hồng Giang</strong><small>Java Backend / Full-stack</small></div>
@@ -56,9 +50,12 @@
                 xác nhận lịch.
               </p>
               <div class="hero-actions">
-                <button class="button primary" data-create disabled>＋ Thêm tài nguyên</button>
-                <button id="demoBtn" class="button outline" disabled>Thử lịch mẫu</button>
+                <button id="demoBtn" class="button primary" disabled>Thử lịch mẫu</button>
+                <button class="button outline" data-create disabled>＋ Thêm tài nguyên</button>
               </div>
+              <p id="empty" class="sample-note">
+                Lịch mẫu có hai tài nguyên và ba lượt đặt giả lập.
+              </p>
             </div>
             <figure class="hero-photo">
               <img
@@ -75,27 +72,6 @@
                 >
               </figcaption>
             </figure>
-          </section>
-          <section class="stats" aria-label="Thống kê tài nguyên và lịch đang xem">
-            <div>
-              <span>▦</span>
-              <div><strong id="statResources">0</strong><small>Tài nguyên</small></div>
-            </div>
-            <div>
-              <span class="green">✓</span>
-              <div><strong id="statConfirmed">0</strong><small>Đã xác nhận</small></div>
-            </div>
-            <div>
-              <span class="orange">◷</span>
-              <div><strong id="statHeld">0</strong><small>Đang giữ chỗ</small></div>
-            </div>
-          </section>
-          <section id="empty" class="empty">
-            <h2>Chưa có tài nguyên</h2>
-            <p>
-              Thêm phòng, bàn hoặc thiết bị của bạn. Lịch mẫu có hai tài nguyên và ba lượt đặt giả
-              lập.
-            </p>
           </section>
           <section id="workbench" hidden>
             <div class="resource-heading">
@@ -157,6 +133,9 @@
                 <div class="legend">
                   <span>○ Còn chỗ</span><span>● Đã chọn</span><span>▧ Không thể đặt</span>
                 </div>
+                <button id="bookingNext" type="button" class="button primary booking-next" hidden>
+                  Tiếp tục giữ chỗ <span aria-hidden="true">↓</span>
+                </button>
                 <p class="schedule-note">
                   Giờ kết thúc của lượt này có thể là giờ bắt đầu của lượt khác. Lịch được kiểm tra
                   lại khi bạn giữ chỗ.
@@ -172,7 +151,7 @@
                 </div>
                 <form id="holdForm">
                   <div class="selected-time" id="selectedInfo">
-                    <span>CHƯA CHỌN GIỜ</span><strong>Chọn một ô giờ bên cạnh</strong
+                    <span>CHƯA CHỌN GIỜ</span><strong>Chọn một khung giờ còn chỗ</strong
                     ><small>Khung còn đủ đơn vị sẽ cho phép giữ chỗ.</small>
                   </div>
                   <label
@@ -201,7 +180,6 @@
                   <p class="help">Tối đa bốn giờ mỗi lượt · Mỗi tài nguyên có sức chứa riêng.</p>
                 </form>
                 <div class="rule-footer">
-                  <span>03</span>
                   <div>
                     <strong>Xác nhận để hoàn tất</strong>
                     <p>
@@ -223,6 +201,11 @@
                   ><button class="button small ghost" id="refreshBtn">↻ Tải lại</button>
                 </div>
               </div>
+              <section class="stats" aria-label="Thống kê tài nguyên và lịch đang xem">
+                <div><strong id="statResources">0</strong><small>Tài nguyên</small></div>
+                <div><strong id="statConfirmed">0</strong><small>Đã xác nhận</small></div>
+                <div><strong id="statHeld">0</strong><small>Đang giữ chỗ</small></div>
+              </section>
               <div class="list-filters">
                 <input
                   id="search"

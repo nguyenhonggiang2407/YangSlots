@@ -167,6 +167,7 @@ function controls() {
     state.loading ||
     state.busy.has($('holdBtn'));
   $('holdBtn').textContent = state.unknown ? '↻ Nhận lại kết quả' : '◷ Giữ chỗ 5 phút';
+  $('bookingNext').hidden = !slot();
   $('unknownNote').hidden = !state.unknown;
   $('prevDay').disabled = !validDay() || $('dayInput').value <= state.today;
   $('nextDay').disabled = !validDay() || $('dayInput').value >= state.maxDay;
@@ -244,7 +245,7 @@ function selectedInfo() {
   if (!s) {
     box.append(
       node('span', '', 'CHƯA CHỌN GIỜ'),
-      node('strong', '', 'Chọn một ô giờ bên cạnh'),
+      node('strong', '', 'Chọn một khung giờ còn chỗ'),
       node('small', '', 'Khung còn đủ đơn vị sẽ cho phép giữ chỗ.'),
     );
     return;
@@ -503,6 +504,7 @@ for (const id of ['dayInput', 'minutes', 'units'])
     task(null, refresh);
   });
 $('holdTitle').addEventListener('input', () => newIntent());
+$('bookingNext').addEventListener('click', () => $('holdTitle').focus());
 $('prevDay').addEventListener('click', () => {
   const next = shiftDay($('dayInput').value, -1);
   if (next >= state.today) {

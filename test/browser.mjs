@@ -123,6 +123,9 @@ test('the photo is local, credited and gives way to the booking workbench', asyn
     const source = page.getByRole('link', { name: 'Aheed Baithul Nafia / Pexels' });
     const sample = page.getByRole('button', { name: 'Thử lịch mẫu' });
     await expect(photo).toBeVisible();
+    await expect(
+      page.getByRole('region', { name: 'Thống kê tài nguyên và lịch đang xem' }),
+    ).toBeHidden();
     assert.equal(await photo.evaluate((img) => img.decode().then(() => img.naturalWidth)), 1000);
     const response = await page.request.get(base + '/assets/meeting-room.webp');
     assert.equal(response.headers()['content-type'], 'image/webp');
@@ -144,6 +147,20 @@ test('the photo is local, credited and gives way to the booking workbench', asyn
     await page.keyboard.press('Enter');
     await expect(page.locator('#resourceName')).toHaveText('Phòng họp Lotus');
     await expect(photo).toBeHidden();
+    await expect(
+      page.getByRole('region', { name: 'Thống kê tài nguyên và lịch đang xem' }),
+    ).toBeVisible();
+    const next = page.getByRole('button', { name: 'Tiếp tục giữ chỗ' });
+    await expect(next).toBeHidden();
+    await choose(page);
+    if (width <= 1000) {
+      await expect(next).toBeVisible();
+      await next.focus();
+      await page.keyboard.press('Enter');
+      await expect(page.locator('#holdTitle')).toBeFocused();
+    } else {
+      await expect(next).toBeHidden();
+    }
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   }
 });

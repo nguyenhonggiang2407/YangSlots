@@ -30,7 +30,7 @@ Windows:
 mvnw.cmd spring-boot:run
 ```
 
-Mở **http://127.0.0.1:3150**. Chọn **Thử lịch mẫu** để tạo hai tài nguyên và ba lịch đặt giả lập cho ngày mai. Với Phòng họp Lotus, 09:00–10:00 đã đặt; chọn 10:00 để thử giữ chỗ rồi xác nhận.
+Mở **http://127.0.0.1:3150**. Chọn **Thử lịch mẫu** để tạo hai tài nguyên và ba lịch đặt giả lập cho ngày mai. Với Phòng họp Lotus, 09:00–10:00 đã đặt. Chọn 10:00 để thử giữ chỗ rồi xác nhận. Trên màn hình hẹp, **Tiếp tục giữ chỗ** chuyển tiêu điểm thẳng tới biểu mẫu.
 
 Hoặc dùng Docker, không cần cài JDK/Maven trên máy:
 
