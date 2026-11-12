@@ -6,6 +6,7 @@ services:
     region: singapore
     autoDeployTrigger: 'off'
     healthCheckPath: /health
+    dockerCommand: /app/start-yangslots.sh
     envVars:
       - key: YANGSLOTS_SECURE_COOKIE
         value: 'true'

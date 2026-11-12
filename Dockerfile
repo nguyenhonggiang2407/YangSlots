@@ -13,6 +13,5 @@ ENV YANGSLOTS_BIND=0.0.0.0 PORT=3150 JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=60 
 USER yang
 EXPOSE 3150
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s CMD ["java","-cp","/probe","vn.yang.slots.HealthProbe"]
-ENTRYPOINT ["/__cacert_entrypoint.sh", "/app/start-yangslots.sh"]
-CMD ["java","-jar","/app/yangslots.jar"]
+CMD ["/app/start-yangslots.sh"]
 
