@@ -102,9 +102,59 @@ async function capture(page, name, fullPage = true) {
     await page.locator('#main').focus();
     await page.locator('#main').evaluate((el) => el.blur());
     await page.evaluate(() => scrollTo(0, 0));
+    if (await page.locator('#workbench').isVisible())
+      await expect(page.locator('#slotSummary')).toHaveText(/khung còn đủ chỗ/);
   }
   await page.screenshot({ path: 'docs/screenshots/' + name + '.png', fullPage });
 }
+test('the photo is local, credited and gives way to the booking workbench', async (t) => {
+  for (const width of [320, 390, 1440]) {
+    const { page } = await workspace(t, { width, height: 900 });
+    const photo = page.getByRole('img', { name: 'Phòng họp với bàn gỗ dài và ghế làm việc' });
+    const source = page.getByRole('link', { name: 'Aheed Baithul Nafia / Pexels' });
+    const sample = page.getByRole('button', { name: 'Thử lịch mẫu' });
+    await expect(photo).toBeVisible();
+    await expect(
+      page.getByRole('region', { name: 'Thống kê tài nguyên và lịch đang xem' }),
+    ).toBeHidden();
+    assert.equal(await photo.evaluate((img) => img.decode().then(() => img.naturalWidth)), 1000);
+    const response = await page.request.get(base + '/assets/meeting-room.webp');
+    assert.equal(response.headers()['content-type'], 'image/webp');
+    assert.equal(response.headers()['set-cookie'], undefined);
+    await expect(source).toHaveAttribute('href', /^https:\/\/www\.pexels\.com\/photo\//);
+    assert.deepEqual(
+      await page.evaluate(() =>
+        performance
+          .getEntriesByType('resource')
+          .filter((entry) => new URL(entry.name).origin !== location.origin)
+          .map((entry) => entry.name),
+      ),
+      [],
+    );
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    if (width !== 320) await capture(page, width === 390 ? 'intro-mobile' : 'intro-desktop');
+    await sample.focus();
+    await expect(sample).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#resourceName')).toHaveText('Phòng họp Lotus');
+    await expect(photo).toBeHidden();
+    await expect(
+      page.getByRole('region', { name: 'Thống kê tài nguyên và lịch đang xem' }),
+    ).toBeVisible();
+    const next = page.getByRole('button', { name: 'Tiếp tục giữ chỗ' });
+    await expect(next).toBeHidden();
+    await choose(page);
+    if (width <= 1000) {
+      await expect(next).toBeVisible();
+      await next.focus();
+      await page.keyboard.press('Enter');
+      await expect(page.locator('#holdTitle')).toBeFocused();
+    } else {
+      await expect(next).toBeHidden();
+    }
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  }
+});
 async function create(page, name = 'Thiết bị dùng thử', capacity = 1) {
   await page.getByRole('button', { name: '＋ Thêm tài nguyên', exact: true }).click();
   await page.locator('#createName').fill(name);
@@ -268,4 +318,67 @@ test('mobile retains resource switching, slot selection and completion without h
   await page.locator('#resourceSelect').selectOption({ label: 'Bàn làm việc tầng 2' });
   await expect(page.locator('#resourceName')).toHaveText('Bàn làm việc tầng 2');
   await expect(page.locator('#statConfirmed')).toHaveText('2');
+});
+
+test('period filters and the mobile booking shortcut keep the selected time usable', async (t) => {
+  for (const width of [320, 390]) {
+    const { page } = await workspace(t, { width, height: 844 });
+    await demo(page);
+    const filters = page.getByRole('group', { name: 'Lọc giờ theo buổi' }),
+      summary = page.locator('#slotSummary'),
+      afternoon = filters.getByRole('button', { name: 'Chiều' }),
+      evening = filters.getByRole('button', { name: 'Tối' }),
+      next = page.getByRole('button', { name: 'Tiếp tục giữ chỗ' }),
+      selected = page.locator('.slot[data-time="14:00"]');
+    await expect(filters.getByRole('button', { name: 'Tất cả' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    const duration = page.locator('#minutes');
+    await duration.selectOption('240');
+    await evening.click();
+    await expect(summary).toHaveText('0 khung còn đủ chỗ');
+    await expect(page.locator('#slotGrid')).toHaveText('Không có khung giờ để hiển thị.');
+    await duration.selectOption('60');
+    await expect(page.locator('.slot[data-time="18:00"]')).toBeEnabled();
+
+    const morning = filters.getByRole('button', { name: 'Sáng' });
+    await morning.click();
+    await expect(morning).toHaveAttribute('aria-pressed', 'true');
+    await expect(summary).toHaveText('9/16 khung còn đủ chỗ');
+    await expect(page.locator('.slot[data-time="11:45"]')).toBeVisible();
+    await expect(page.locator('.slot[data-time="12:00"]')).toHaveCount(0);
+
+    await afternoon.focus();
+    await page.keyboard.press('Enter');
+    await expect(afternoon).toBeFocused();
+    await expect(afternoon).toHaveAttribute('aria-pressed', 'true');
+    await expect(summary).toHaveText('24/24 khung còn đủ chỗ');
+    await expect(page.locator('.slot[data-time="18:00"]')).toHaveCount(0);
+    await selected.focus();
+    await page.keyboard.press('Enter');
+    await expect(selected).toBeFocused();
+    await expect(selected).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#bookingSelectionTime')).toHaveText('14:00 – 15:00');
+    await expect(next).toBeInViewport({ ratio: 1 });
+
+    await evening.click();
+    await expect(page.locator('.slot[data-time="18:00"]')).toBeEnabled();
+    await expect(selected).toHaveCount(0);
+    await expect(page.locator('#bookingSelectionTime')).toHaveText('14:00 – 15:00');
+    await afternoon.click();
+    await expect(selected).toHaveAttribute('aria-pressed', 'true');
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+
+    if (width === 390) {
+      await page.locator('.day-caption').evaluate((element) => element.scrollIntoView());
+      await page.mouse.move(1, 1);
+      await capture(page, 'planner-mobile', false);
+    }
+    await next.click();
+    await expect(page.locator('#holdTitle')).toBeFocused();
+    await page.locator('#holdBtn').click();
+    await expect(page.locator('#dialogFacts')).toContainText('14:00 – 15:00');
+    await confirm(page);
+  }
 });

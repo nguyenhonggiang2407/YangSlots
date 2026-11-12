@@ -2,17 +2,25 @@
 
 [![YangSlots checks](https://github.com/nguyenhonggiang2407/YangSlots/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nguyenhonggiang2407/YangSlots/actions/workflows/ci.yml)
 
+[**Mở demo YangSlots**](https://yangslots-demo.onrender.com) và bấm **Thử lịch mẫu** để đặt thử.
+
 **Chọn tài nguyên → chọn giờ → giữ chỗ năm phút → xác nhận → xuất lịch.**
 
 Ứng dụng thực hành **Java Backend / Full-stack** của **Nguyễn Hồng Giang (Yang)**. Java 17, Spring Boot 4.1.2, Spring JDBC, Bean Validation và H2 dạng tệp. Giao diện JavaScript thuần, tiếng Việt.
 
-Repository độc lập được tách từ nhánh [yangslots của DTDD](https://github.com/nguyenhonggiang2407/DTDD/tree/yangslots), giữ nguyên lịch sử và nguồn kế thừa. Nhánh cũ vẫn được giữ; xem [biên bản chuyển repository](docs/repository-migration.md). Chưa triển khai website công khai.
+Repository độc lập được tách từ nhánh [yangslots của DTDD](https://github.com/nguyenhonggiang2407/DTDD/tree/yangslots), giữ nguyên lịch sử và nguồn kế thừa. Nhánh cũ vẫn được giữ; xem [biên bản chuyển repository](docs/repository-migration.md).
 
-![YangSlots desktop](docs/screenshots/desktop.png)
+## Xem nhanh dự án
+
+- **Thử một lượt đặt** theo [hướng dẫn chạy cục bộ](#chạy-thử) hoặc xem [màn hình chọn giờ](docs/screenshots/desktop.png), [đồng hồ giữ chỗ](docs/screenshots/hold.png) và [bộ lọc giờ trên điện thoại](docs/screenshots/planner-mobile.png).
+- **Đọc logic giữ chỗ** để xem cách kiểm tra sức chứa và lưu lượt đặt trong cùng transaction. Ca kiểm thử đồng thời gửi 20 yêu cầu tranh bốn chỗ. [BookingService](src/main/java/vn/yang/slots/BookingService.java) · [ReservationsTest](src/test/java/vn/yang/slots/ReservationsTest.java)
+- **Xem thay đổi đang duyệt** về thao tác giữ chỗ trên điện thoại và cách duy trì tiêu điểm bàn phím khi danh sách giờ cập nhật. [PR #5](https://github.com/nguyenhonggiang2407/YangSlots/pull/5) · [PR #4](https://github.com/nguyenhonggiang2407/YangSlots/pull/4)
+
+![Màn hình bắt đầu của YangSlots trên desktop](docs/screenshots/intro-desktop.png)
 
 ## Chạy thử
 
-Cần **JDK 17 trở lên**. Maven Wrapper đã có trong mã nguồn.
+Cần **JDK 17 trở lên**. Maven Wrapper đã có trong mã nguồn. Nếu xem bản đang duyệt, chuyển sang nhánh của PR trước khi chạy Maven Wrapper.
 
 ```sh
 git clone https://github.com/nguyenhonggiang2407/YangSlots.git
@@ -20,13 +28,15 @@ cd YangSlots
 ./mvnw spring-boot:run
 ```
 
-Windows:
+Trên Windows, chạy lệnh sau trong thư mục đã clone.
 
-```bat
-mvnw.cmd spring-boot:run
+```powershell
+.\mvnw.cmd spring-boot:run
 ```
 
-Mở **http://127.0.0.1:3150**. Chọn **Thử lịch mẫu** để tạo hai tài nguyên và ba lịch đặt giả lập cho ngày mai. Với Phòng họp Lotus, 09:00–10:00 đã đặt; chọn 10:00 để thử giữ chỗ rồi xác nhận.
+1. Mở `http://127.0.0.1:3150` rồi chọn **Thử lịch mẫu**. Ứng dụng tạo hai tài nguyên và ba lượt đặt giả lập cho ngày mai, sau đó mở **Phòng họp Lotus**.
+2. Chọn **10:00**. Trên màn hình hẹp, chọn **Tiếp tục giữ chỗ** để chuyển đến biểu mẫu. Nhập tên lượt đặt và bấm **Giữ chỗ 5 phút**.
+3. Bấm **Xác nhận đặt** trước khi đồng hồ hết giờ. Đóng hộp thoại rồi chọn **Lịch ICS** để tải `yangslots.ics`.
 
 Hoặc dùng Docker, không cần cài JDK/Maven trên máy:
 
@@ -45,10 +55,17 @@ java -jar target/yangslots.jar
 
 CI cũng lưu JAR trong artifact **yangslots-application** của lần chạy đã đạt.
 
+## Triển khai bản demo
+
+1. Đăng nhập Render và tạo Blueprint từ repository YangSlots. Chọn nhánh chứa [`render.yaml`](render.yaml), hoặc mở [cấu hình triển khai nhánh giao diện](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fnguyenhonggiang2407%2FYangSlots%2Ftree%2Ffeat%2Fclear-resource-booking-layout).
+2. Xác nhận dịch vụ Docker dùng gói **Free** tại Singapore. Khi deploy xong, mở URL HTTPS do Render cấp và thử luồng chọn giờ, giữ chỗ, xác nhận ở trên.
+
+Bản demo dùng H2 trong bộ nhớ. Lịch đặt được xóa khi dịch vụ khởi động lại. Lần mở đầu sau khi dịch vụ ngủ có thể mất khoảng một phút. [Giới hạn gói Render Free](https://render.com/docs/free)
+
 ## Các luồng đã triển khai
 
 - **Tài nguyên:** tên và sức chứa 1–20 đơn vị, tối đa 10 tài nguyên/workspace. Sức chứa cố định sau khi tạo. Đổi tên/xóa có kiểm tra version; xóa cascade các lượt đặt.
-- **Lịch theo ngày:** chọn tài nguyên, ngày, thời lượng và số đơn vị; xem các giờ bắt đầu theo bước 15 phút. Hiển thị tại Việt Nam, UTC+7; API lưu thời điểm chuẩn UTC.
+- **Lịch theo ngày:** chọn tài nguyên, ngày, thời lượng và số đơn vị. Lọc giờ bắt đầu theo buổi và xem số khung còn đủ chỗ. Trên điện thoại, giờ đã chọn và nút tiếp tục giữ chỗ hiện cùng lưới giờ. Giao diện dùng giờ Việt Nam, UTC+7. API lưu thời điểm chuẩn UTC.
 - **Giữ chỗ năm phút:** giữ chỗ chiếm sức chứa ngay. Xác nhận trước hạn chuyển thành CONFIRMED; hết hạn được hiển thị EXPIRED và tự ngừng chiếm chỗ khi đọc/tạo yêu cầu tiếp theo.
 - **Không cần tác vụ nền để trả chỗ:** tính hiệu lực bằng clock và hold_until trong truy vấn, kể cả sau khi khởi động lại.
 - **Kiểm soát đồng thời:** transaction READ_COMMITTED khóa hàng workspace trước mọi mutation, rồi kiểm tra sức chứa và ghi reservation/idempotency cùng transaction. Các workspace khác có hàng khóa riêng.
@@ -182,7 +199,7 @@ CI dùng JDK 17 và Node.js 24, build JAR, chạy các bộ test, chụp giao di
 
 <details><summary>Giao diện điện thoại</summary>
 
-<img src="docs/screenshots/mobile.png" width="390" alt="YangSlots mobile">
+<img src="docs/screenshots/planner-mobile.png" width="390" alt="Lịch buổi chiều và thanh giữ chỗ trên điện thoại">
 
 </details>
 
@@ -218,6 +235,8 @@ CI dùng JDK 17 và Node.js 24, build JAR, chạy các bộ test, chụp giao di
 Tham khảo [hotel-booking-crew/kayak.py](https://github.com/Trinhvhao/ai-engineering-hub/blob/86dc1699fe036e5cd21ed7d3c57419a7fc3c844b/hotel-booking-crew/kayak.py), trong fork của Trinhvhao, dự án gốc [patchy631/ai-engineering-hub](https://github.com/patchy631/ai-engineering-hub). Mã này tạo URL tìm khách sạn theo địa điểm/ngày/số khách; bản gốc được giữ tại upstream/hotel_search.py cùng MIT gốc.
 
 YangSlots mới triển khai phần giữ chỗ, sức chứa, private sessions, transaction, export và UI. Không nhận là tác giả mã tham khảo hay toàn bộ dự án CrewAI. Phân định tại [NOTICE.md](NOTICE.md).
+
+Ảnh phòng họp ở màn hình bắt đầu là ảnh minh họa của [Aheed Baithul Nafia trên Pexels](https://www.pexels.com/photo/conference-table-and-chairs-in-an-empty-office-17739892/) theo [giấy phép Pexels](https://www.pexels.com/license/). Ứng dụng phục vụ bản WebP 1000 × 750 đã giảm kích thước từ chính máy chủ. Lịch mẫu và tên phòng trong ứng dụng là dữ liệu giả lập.
 
 Maven Wrapper do Spring Initializr sinh, giữ Apache-2.0/NOTICE trong LICENSES/. Các dependency giữ giấy phép riêng. [Tài liệu Spring Boot](https://docs.spring.io/spring-boot/system-requirements.html).
 

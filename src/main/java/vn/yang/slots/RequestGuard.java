@@ -63,7 +63,13 @@ class RequestGuard extends OncePerRequestFilter {
           "Host không được phép.");
       String path = req.getRequestURI(), method = req.getMethod();
       boolean staticPath =
-          Set.of("/", "/assets/app.js", "/assets/styles.css", "/assets/favicon.svg").contains(path);
+          Set.of(
+                  "/",
+                  "/assets/app.js",
+                  "/assets/styles.css",
+                  "/assets/favicon.svg",
+                  "/assets/meeting-room.webp")
+              .contains(path);
       if (staticPath || path.equals("/health")) {
         require(
             method.equals("GET") || method.equals("HEAD"), 405, "Phương thức không được hỗ trợ.");

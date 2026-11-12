@@ -14,12 +14,12 @@
     <div class="app">
       <aside>
         <a class="brand" href="/"
-          ><span class="brand-mark">▦</span
-          ><span>Yang<span>Slots</span><small>SPACE FOR GOOD PLANS.</small></span></a
+          ><span class="brand-mark" aria-hidden="true">▦</span
+          ><span>Yang<span>Slots</span></span></a
         >
         <div class="workspace">
           <span class="avatar">NG</span>
-          <div><strong>Giang’s workspace</strong><small>Không gian đặt lịch cá nhân</small></div>
+          <div><strong>Lịch cá nhân</strong><small>Phiên đặt lịch riêng</small></div>
         </div>
         <div class="side-label">
           TÀI NGUYÊN <button data-create disabled aria-label="Thêm tài nguyên">＋</button>
@@ -27,12 +27,6 @@
         <nav id="resourceList" aria-label="Tài nguyên">
           <p class="muted">Chưa có tài nguyên.</p>
         </nav>
-        <div class="side-tip">
-          <span>◷</span>
-          <h3>Kế hoạch tốt<br />cần một chỗ trống.</h3>
-          <p>Chọn khung giờ phù hợp. Giữ chỗ năm phút để hoàn tất xác nhận.</p>
-          <small>08:00–20:00 · UTC+7</small>
-        </div>
         <footer class="owner">
           <span class="avatar">NG</span>
           <div><strong>Nguyễn Hồng Giang</strong><small>Java Backend / Full-stack</small></div>
@@ -48,45 +42,36 @@
           <div id="expired" class="error-banner" hidden>
             Workspace hết hạn. Hãy tải lại trang để mở phiên mới.
           </div>
-          <div class="hero">
-            <div>
-              <div class="eyebrow">RESERVE A LITTLE ROOM FOR YOUR IDEAS</div>
-              <h1>Đúng lịch.<br /><span>Đủ chỗ.</span></h1>
-              <p>Phòng họp, bàn làm việc hay thiết bị — sắp xếp một cách rõ ràng.</p>
-            </div>
-            <div class="hero-actions">
-              <button id="demoBtn" class="button ghost" disabled>Thử lịch mẫu ↗</button
-              ><button class="button primary" data-create disabled>＋ Thêm tài nguyên</button>
-            </div>
-          </div>
-          <section class="stats" aria-label="Thống kê">
-            <div>
-              <span>▦</span>
-              <div><strong id="statResources">0</strong><small>Tài nguyên riêng</small></div>
-            </div>
-            <div>
-              <span class="green">✓</span>
-              <div>
-                <strong id="statConfirmed">0</strong><small>Đã xác nhận trong danh sách</small>
+          <section class="hero" aria-labelledby="pageTitle">
+            <div class="hero-content">
+              <h1 id="pageTitle">Đặt lịch tài nguyên</h1>
+              <p>
+                Kiểm tra giờ trống cho phòng họp, bàn làm việc hoặc thiết bị. Giữ chỗ năm phút để
+                xác nhận lịch.
+              </p>
+              <div class="hero-actions">
+                <button id="demoBtn" class="button primary" disabled>Thử lịch mẫu</button>
+                <button class="button outline" data-create disabled>＋ Thêm tài nguyên</button>
               </div>
+              <p id="empty" class="sample-note">
+                Lịch mẫu có hai tài nguyên và ba lượt đặt giả lập.
+              </p>
             </div>
-            <div>
-              <span class="orange">◷</span>
-              <div><strong id="statHeld">0</strong><small>Đang giữ chỗ trong danh sách</small></div>
-            </div>
-          </section>
-          <section id="empty" class="empty">
-            <div class="empty-icon">▦</div>
-            <h2>Dành một chỗ cho kế hoạch mới</h2>
-            <p>
-              Thêm tài nguyên và sức chứa, rồi chọn một khung giờ.<br />Bộ mẫu có hai tài nguyên và
-              ba lịch đặt giả lập.
-            </p>
-            <button class="button primary" data-create disabled>Thêm tài nguyên đầu tiên</button>
-            <div class="empty-steps">
-              <span><b>01</b> Chọn giờ</span><span><b>02</b> Giữ chỗ 5 phút</span
-              ><span><b>03</b> Xác nhận</span>
-            </div>
+            <figure class="hero-photo">
+              <img
+                src="/assets/meeting-room.webp"
+                alt="Phòng họp với bàn gỗ dài và ghế làm việc"
+                width="1000"
+                height="750"
+              />
+              <figcaption>
+                Ảnh minh họa ·
+                <a
+                  href="https://www.pexels.com/photo/conference-table-and-chairs-in-an-empty-office-17739892/"
+                  >Aheed Baithul Nafia / Pexels</a
+                >
+              </figcaption>
+            </figure>
           </section>
           <section id="workbench" hidden>
             <div class="resource-heading">
@@ -108,9 +93,8 @@
               <section class="schedule card">
                 <div class="card-head">
                   <div>
-                    <div class="eyebrow">01 / CHOOSE YOUR TIME</div>
-                    <h3>Khoảng trống cho bạn</h3>
-                    <p>Khung 15 phút · Thời gian hiển thị tại Việt Nam.</p>
+                    <h3>Chọn khung giờ</h3>
+                    <p>Giờ bắt đầu cách nhau 15 phút.</p>
                   </div>
                   <span class="timezone">UTC+7</span>
                 </div>
@@ -143,9 +127,29 @@
                   /></label>
                 </div>
                 <div class="day-caption">
-                  <strong id="dayCaption"></strong><span id="slotSummary"></span>
+                  <strong id="dayCaption"></strong><span id="slotSummary" role="status"></span>
+                </div>
+                <div
+                  class="period-filter"
+                  id="periodFilter"
+                  role="group"
+                  aria-label="Lọc giờ theo buổi"
+                >
+                  <button type="button" data-period="all" aria-pressed="true">Tất cả</button>
+                  <button type="button" data-period="morning" aria-pressed="false">Sáng</button>
+                  <button type="button" data-period="afternoon" aria-pressed="false">Chiều</button>
+                  <button type="button" data-period="evening" aria-pressed="false">Tối</button>
                 </div>
                 <div id="slotGrid" class="slot-grid" aria-label="Các giờ bắt đầu"></div>
+                <div id="bookingSelection" class="booking-selection" hidden>
+                  <div class="booking-selection-time">
+                    <span>Giờ đã chọn</span>
+                    <strong id="bookingSelectionTime"></strong>
+                  </div>
+                  <button id="bookingNext" type="button" class="button primary booking-next">
+                    Tiếp tục giữ chỗ <span aria-hidden="true">↓</span>
+                  </button>
+                </div>
                 <div class="legend">
                   <span>○ Còn chỗ</span><span>● Đã chọn</span><span>▧ Không thể đặt</span>
                 </div>
@@ -157,7 +161,6 @@
               <section class="booking-card card">
                 <div class="card-head">
                   <div>
-                    <div class="eyebrow">02 / MAKE A PLAN</div>
                     <h3>Giữ chỗ của bạn</h3>
                     <p>Bạn có năm phút để xác nhận.</p>
                   </div>
@@ -165,7 +168,7 @@
                 </div>
                 <form id="holdForm">
                   <div class="selected-time" id="selectedInfo">
-                    <span>CHƯA CHỌN GIỜ</span><strong>Chọn một ô giờ bên cạnh</strong
+                    <span>CHƯA CHỌN GIỜ</span><strong>Chọn một khung giờ còn chỗ</strong
                     ><small>Khung còn đủ đơn vị sẽ cho phép giữ chỗ.</small>
                   </div>
                   <label
@@ -194,7 +197,6 @@
                   <p class="help">Tối đa bốn giờ mỗi lượt · Mỗi tài nguyên có sức chứa riêng.</p>
                 </form>
                 <div class="rule-footer">
-                  <span>03</span>
                   <div>
                     <strong>Xác nhận để hoàn tất</strong>
                     <p>
@@ -207,7 +209,6 @@
             <section class="reservations card">
               <div class="card-head">
                 <div>
-                  <div class="eyebrow">YOUR PLANS, IN ONE PLACE</div>
                   <h3>Lịch đặt của bạn</h3>
                   <p id="listMeta"></p>
                 </div>
@@ -217,6 +218,11 @@
                   ><button class="button small ghost" id="refreshBtn">↻ Tải lại</button>
                 </div>
               </div>
+              <section class="stats" aria-label="Thống kê tài nguyên và lịch đang xem">
+                <div><strong id="statResources">0</strong><small>Tài nguyên</small></div>
+                <div><strong id="statConfirmed">0</strong><small>Đã xác nhận</small></div>
+                <div><strong id="statHeld">0</strong><small>Đang giữ chỗ</small></div>
+              </section>
               <div class="list-filters">
                 <input
                   id="search"
