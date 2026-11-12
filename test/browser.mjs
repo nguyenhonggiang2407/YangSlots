@@ -107,15 +107,6 @@ async function capture(page, name, fullPage = true) {
   }
   await page.screenshot({ path: 'docs/screenshots/' + name + '.png', fullPage });
 }
-async function create(page, name = 'Thiết bị dùng thử', capacity = 1) {
-  await page.getByRole('button', { name: '＋ Thêm tài nguyên', exact: true }).click();
-  await page.locator('#createName').fill(name);
-  await page.locator('#createCapacity').fill(String(capacity));
-  await page.locator('#createSubmit').click();
-  await expect(page.locator('#createDialog')).not.toBeVisible();
-  await expect(page.locator('#resourceName')).toHaveText(name);
-  await expect(page.locator('#slotGrid .slot[data-time="10:00"]')).toBeEnabled();
-}
 test('the photo is local, credited and gives way to the booking workbench', async (t) => {
   for (const width of [320, 390, 1440]) {
     const { page } = await workspace(t, { width, height: 900 });
@@ -164,6 +155,15 @@ test('the photo is local, credited and gives way to the booking workbench', asyn
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   }
 });
+async function create(page, name = 'Thiết bị dùng thử', capacity = 1) {
+  await page.getByRole('button', { name: '＋ Thêm tài nguyên', exact: true }).click();
+  await page.locator('#createName').fill(name);
+  await page.locator('#createCapacity').fill(String(capacity));
+  await page.locator('#createSubmit').click();
+  await expect(page.locator('#createDialog')).not.toBeVisible();
+  await expect(page.locator('#resourceName')).toHaveText(name);
+  await expect(page.locator('#slotGrid .slot[data-time="10:00"]')).toBeEnabled();
+}
 test('sample calendar → five-minute hold → confirmation → capacity and CSV/ICS export', async (t) => {
   const { page } = await workspace(t);
   await demo(page);

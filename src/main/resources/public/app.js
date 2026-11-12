@@ -211,15 +211,15 @@ function renderStats() {
   $('statHeld').textContent = state.bookings.filter((b) => effective(b) === 'HELD').length;
 }
 function renderSlots(focusStart) {
-  const grid = $('slotGrid'),
-    summary = $('slotSummary'),
+  const grid = $('slotGrid');
+  grid.replaceChildren();
+  const summary = $('slotSummary'),
     slots = state.slots
       .map((s) => ({ slot: s, time: slotTime(s.startsAt) }))
       .filter(({ time }) => state.period === 'all' || periodOf(time) === state.period);
   for (const button of $('periodFilter').querySelectorAll('button'))
     button.setAttribute('aria-pressed', String(button.dataset.period === state.period));
   grid.classList.toggle('all-periods', state.period === 'all');
-  grid.replaceChildren();
   $('dayCaption').textContent = validDay() ? dayText($('dayInput').value) : 'Chọn ngày đặt';
   const available = slots.filter(({ slot }) => slot.canHold).length;
   const count = slots.length ? available + '/' + slots.length : '0';
