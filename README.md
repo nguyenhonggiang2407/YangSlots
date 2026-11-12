@@ -6,7 +6,7 @@
 
 Ứng dụng thực hành **Java Backend / Full-stack** của **Nguyễn Hồng Giang (Yang)**. Java 17, Spring Boot 4.1.2, Spring JDBC, Bean Validation và H2 dạng tệp. Giao diện JavaScript thuần, tiếng Việt.
 
-Repository độc lập được tách từ nhánh [yangslots của DTDD](https://github.com/nguyenhonggiang2407/DTDD/tree/yangslots), giữ nguyên lịch sử và nguồn kế thừa. Nhánh cũ vẫn được giữ; xem [biên bản chuyển repository](docs/repository-migration.md). Chưa triển khai website công khai.
+Repository độc lập được tách từ nhánh [yangslots của DTDD](https://github.com/nguyenhonggiang2407/DTDD/tree/yangslots), giữ nguyên lịch sử và nguồn kế thừa. Nhánh cũ vẫn được giữ; xem [biên bản chuyển repository](docs/repository-migration.md).
 
 ## Xem nhanh dự án
 
@@ -52,6 +52,13 @@ java -jar target/yangslots.jar
 ```
 
 CI cũng lưu JAR trong artifact **yangslots-application** của lần chạy đã đạt.
+
+## Triển khai bản demo
+
+1. Đăng nhập Render và tạo Blueprint từ repository YangSlots. Chọn nhánh chứa [`render.yaml`](render.yaml), hoặc mở [cấu hình triển khai nhánh giao diện](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fnguyenhonggiang2407%2FYangSlots%2Ftree%2Ffeat%2Fclear-resource-booking-layout).
+2. Xác nhận dịch vụ Docker dùng gói **Free** tại Singapore. Khi deploy xong, mở URL HTTPS do Render cấp và thử luồng chọn giờ, giữ chỗ, xác nhận ở trên.
+
+Bản demo dùng H2 trong bộ nhớ. Lịch đặt được xóa khi dịch vụ khởi động lại. Lần mở đầu sau khi dịch vụ ngủ có thể mất khoảng một phút. [Giới hạn gói Render Free](https://render.com/docs/free)
 
 ## Các luồng đã triển khai
 

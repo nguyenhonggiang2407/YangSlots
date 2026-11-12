@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: yangslots-demo
+    runtime: docker
+    plan: free
+    region: singapore
+    autoDeployTrigger: 'off'
+    healthCheckPath: /health
+    dockerCommand: >-
+      /bin/sh -c 'exec env
+      YANGSLOTS_ALLOWED_HOSTS="localhost,127.0.0.1,${RENDER_EXTERNAL_HOSTNAME:?}"
+      YANGSLOTS_PUBLIC_ORIGIN="${RENDER_EXTERNAL_URL:?}"
+      java -jar /app/yangslots.jar'
+    envVars:
+      - key: YANGSLOTS_SECURE_COOKIE
+        value: 'true'
+      - key: YANGSLOTS_DB
+        value: 'jdbc:h2:mem:yangslots-demo;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=5000;DATABASE_TO_UPPER=FALSE'
