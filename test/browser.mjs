@@ -319,3 +319,66 @@ test('mobile retains resource switching, slot selection and completion without h
   await expect(page.locator('#resourceName')).toHaveText('Bàn làm việc tầng 2');
   await expect(page.locator('#statConfirmed')).toHaveText('2');
 });
+
+test('period filters and the mobile booking shortcut keep the selected time usable', async (t) => {
+  for (const width of [320, 390]) {
+    const { page } = await workspace(t, { width, height: 844 });
+    await demo(page);
+    const filters = page.getByRole('group', { name: 'Lọc giờ theo buổi' }),
+      summary = page.locator('#slotSummary'),
+      afternoon = filters.getByRole('button', { name: 'Chiều' }),
+      evening = filters.getByRole('button', { name: 'Tối' }),
+      next = page.getByRole('button', { name: 'Tiếp tục giữ chỗ' }),
+      selected = page.locator('.slot[data-time="14:00"]');
+    await expect(filters.getByRole('button', { name: 'Tất cả' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    const duration = page.locator('#minutes');
+    await duration.selectOption('240');
+    await evening.click();
+    await expect(summary).toHaveText('0 khung còn đủ chỗ');
+    await expect(page.locator('#slotGrid')).toHaveText('Không có khung giờ để hiển thị.');
+    await duration.selectOption('60');
+    await expect(page.locator('.slot[data-time="18:00"]')).toBeEnabled();
+
+    const morning = filters.getByRole('button', { name: 'Sáng' });
+    await morning.click();
+    await expect(morning).toHaveAttribute('aria-pressed', 'true');
+    await expect(summary).toHaveText('9/16 khung còn đủ chỗ');
+    await expect(page.locator('.slot[data-time="11:45"]')).toBeVisible();
+    await expect(page.locator('.slot[data-time="12:00"]')).toHaveCount(0);
+
+    await afternoon.focus();
+    await page.keyboard.press('Enter');
+    await expect(afternoon).toBeFocused();
+    await expect(afternoon).toHaveAttribute('aria-pressed', 'true');
+    await expect(summary).toHaveText('24/24 khung còn đủ chỗ');
+    await expect(page.locator('.slot[data-time="18:00"]')).toHaveCount(0);
+    await selected.focus();
+    await page.keyboard.press('Enter');
+    await expect(selected).toBeFocused();
+    await expect(selected).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#bookingSelectionTime')).toHaveText('14:00 – 15:00');
+    await expect(next).toBeInViewport({ ratio: 1 });
+
+    await evening.click();
+    await expect(page.locator('.slot[data-time="18:00"]')).toBeEnabled();
+    await expect(selected).toHaveCount(0);
+    await expect(page.locator('#bookingSelectionTime')).toHaveText('14:00 – 15:00');
+    await afternoon.click();
+    await expect(selected).toHaveAttribute('aria-pressed', 'true');
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+
+    if (width === 390) {
+      await page.locator('.day-caption').evaluate((element) => element.scrollIntoView());
+      await page.mouse.move(1, 1);
+      await capture(page, 'planner-mobile', false);
+    }
+    await next.click();
+    await expect(page.locator('#holdTitle')).toBeFocused();
+    await page.locator('#holdBtn').click();
+    await expect(page.locator('#dialogFacts')).toContainText('14:00 – 15:00');
+    await confirm(page);
+  }
+});

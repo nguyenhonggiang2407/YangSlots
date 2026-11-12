@@ -4,6 +4,7 @@ const state = {
   resources: [],
   bookings: [],
   slots: [],
+  period: 'all',
   currentId: null,
   selectedStart: null,
   requestKey: crypto.randomUUID(),
@@ -62,6 +63,12 @@ const effective = (booking) =>
 const shiftDay = (day, amount) =>
   new Date(Date.parse(day + 'T00:00:00Z') + amount * 86400000).toISOString().slice(0, 10);
 const dayText = (day) => fmtDay.format(new Date(day + 'T05:00:00Z'));
+const slotTime = (value) => fmtTime.format(new Date(value));
+const slotRange = (s) => slotTime(s.startsAt) + ' – ' + slotTime(s.endsAt);
+function periodOf(time) {
+  if (time < '12:00') return 'morning';
+  return time < '18:00' ? 'afternoon' : 'evening';
+}
 function syncTime(value) {
   if (typeof value === 'number') state.serverOffset = value - Date.now();
 }
@@ -167,7 +174,6 @@ function controls() {
     state.loading ||
     state.busy.has($('holdBtn'));
   $('holdBtn').textContent = state.unknown ? '↻ Nhận lại kết quả' : '◷ Giữ chỗ 5 phút';
-  $('bookingNext').hidden = !slot();
   $('unknownNote').hidden = !state.unknown;
   $('prevDay').disabled = !validDay() || $('dayInput').value <= state.today;
   $('nextDay').disabled = !validDay() || $('dayInput').value >= state.maxDay;
@@ -204,16 +210,25 @@ function renderStats() {
   ).length;
   $('statHeld').textContent = state.bookings.filter((b) => effective(b) === 'HELD').length;
 }
-function renderSlots() {
-  const grid = $('slotGrid');
+function renderSlots(focusStart) {
+  const grid = $('slotGrid'),
+    summary = $('slotSummary'),
+    slots = state.slots
+      .map((s) => ({ slot: s, time: slotTime(s.startsAt) }))
+      .filter(({ time }) => state.period === 'all' || periodOf(time) === state.period);
+  for (const button of $('periodFilter').querySelectorAll('button'))
+    button.setAttribute('aria-pressed', String(button.dataset.period === state.period));
+  grid.classList.toggle('all-periods', state.period === 'all');
   grid.replaceChildren();
-  $('dayCaption').textContent = dayText($('dayInput').value || state.today);
-  $('slotSummary').textContent = state.loading
-    ? 'Đang cập nhật…'
-    : state.slots.filter((s) => s.canHold).length + ' khung còn đủ chỗ';
-  for (const s of state.slots) {
-    const time = fmtTime.format(new Date(s.startsAt)),
-      button = node('button', 'slot' + (s.startsAt === state.selectedStart ? ' selected' : ''));
+  $('dayCaption').textContent = validDay() ? dayText($('dayInput').value) : 'Chọn ngày đặt';
+  const available = slots.filter(({ slot }) => slot.canHold).length;
+  const count = slots.length ? available + '/' + slots.length : '0';
+  const status = state.loading ? 'Đang cập nhật…' : count + ' khung còn đủ chỗ';
+  if (summary.textContent !== status) summary.textContent = status;
+  if (!slots.length && !state.loading && validDay() && validUnits())
+    grid.append(node('p', 'slot-empty', 'Không có khung giờ để hiển thị.'));
+  for (const { slot: s, time } of slots) {
+    const button = node('button', 'slot' + (s.startsAt === state.selectedStart ? ' selected' : ''));
     button.type = 'button';
     button.dataset.time = time;
     button.dataset.start = s.startsAt;
@@ -225,15 +240,15 @@ function renderSlots() {
     button.setAttribute('aria-pressed', String(s.startsAt === state.selectedStart));
     button.append(
       node('strong', '', time),
-      node('small', '', s.canHold ? s.availableUnits + ' còn trống' : 'Không thể đặt'),
+      node('small', '', s.canHold ? 'Còn ' + s.availableUnits + ' chỗ' : 'Không thể đặt'),
     );
     button.addEventListener('click', () => {
       state.selectedStart = s.startsAt;
       newIntent();
-      renderSlots();
-      selectedInfo();
+      renderSlots(s.startsAt);
     });
     grid.append(button);
+    if (s.startsAt === focusStart && !button.disabled) button.focus({ preventScroll: true });
   }
   selectedInfo();
   controls();
@@ -241,6 +256,7 @@ function renderSlots() {
 function selectedInfo() {
   const s = slot(),
     box = $('selectedInfo');
+  $('bookingSelection').hidden = !s;
   box.replaceChildren();
   if (!s) {
     box.append(
@@ -250,13 +266,11 @@ function selectedInfo() {
     );
     return;
   }
+  const range = slotRange(s);
+  $('bookingSelectionTime').textContent = range;
   box.append(
     node('span', '', 'KHUNG GIỜ ĐÃ CHỌN'),
-    node(
-      'strong',
-      '',
-      fmtTime.format(new Date(s.startsAt)) + ' – ' + fmtTime.format(new Date(s.endsAt)),
-    ),
+    node('strong', '', range),
     node(
       'small',
       '',
@@ -505,6 +519,13 @@ for (const id of ['dayInput', 'minutes', 'units'])
   });
 $('holdTitle').addEventListener('input', () => newIntent());
 $('bookingNext').addEventListener('click', () => $('holdTitle').focus());
+$('periodFilter').addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-period]');
+  if (!button || button.dataset.period === state.period) return;
+  state.period = button.dataset.period;
+  $('slotGrid').scrollTop = 0;
+  renderSlots();
+});
 $('prevDay').addEventListener('click', () => {
   const next = shiftDay($('dayInput').value, -1);
   if (next >= state.today) {

@@ -93,8 +93,8 @@
               <section class="schedule card">
                 <div class="card-head">
                   <div>
-                    <h3>Khung giờ còn chỗ</h3>
-                    <p>Khung 15 phút · Thời gian hiển thị tại Việt Nam.</p>
+                    <h3>Chọn khung giờ</h3>
+                    <p>Giờ bắt đầu cách nhau 15 phút.</p>
                   </div>
                   <span class="timezone">UTC+7</span>
                 </div>
@@ -127,15 +127,32 @@
                   /></label>
                 </div>
                 <div class="day-caption">
-                  <strong id="dayCaption"></strong><span id="slotSummary"></span>
+                  <strong id="dayCaption"></strong><span id="slotSummary" role="status"></span>
+                </div>
+                <div
+                  class="period-filter"
+                  id="periodFilter"
+                  role="group"
+                  aria-label="Lọc giờ theo buổi"
+                >
+                  <button type="button" data-period="all" aria-pressed="true">Tất cả</button>
+                  <button type="button" data-period="morning" aria-pressed="false">Sáng</button>
+                  <button type="button" data-period="afternoon" aria-pressed="false">Chiều</button>
+                  <button type="button" data-period="evening" aria-pressed="false">Tối</button>
                 </div>
                 <div id="slotGrid" class="slot-grid" aria-label="Các giờ bắt đầu"></div>
+                <div id="bookingSelection" class="booking-selection" hidden>
+                  <div class="booking-selection-time">
+                    <span>Giờ đã chọn</span>
+                    <strong id="bookingSelectionTime"></strong>
+                  </div>
+                  <button id="bookingNext" type="button" class="button primary booking-next">
+                    Tiếp tục giữ chỗ <span aria-hidden="true">↓</span>
+                  </button>
+                </div>
                 <div class="legend">
                   <span>○ Còn chỗ</span><span>● Đã chọn</span><span>▧ Không thể đặt</span>
                 </div>
-                <button id="bookingNext" type="button" class="button primary booking-next" hidden>
-                  Tiếp tục giữ chỗ <span aria-hidden="true">↓</span>
-                </button>
                 <p class="schedule-note">
                   Giờ kết thúc của lượt này có thể là giờ bắt đầu của lượt khác. Lịch được kiểm tra
                   lại khi bạn giữ chỗ.

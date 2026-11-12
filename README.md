@@ -10,7 +10,7 @@ Repository độc lập được tách từ nhánh [yangslots của DTDD](https:
 
 ## Xem nhanh dự án
 
-- **Thử một lượt đặt** theo [hướng dẫn chạy cục bộ](#chạy-thử) hoặc xem [màn hình chọn giờ](docs/screenshots/desktop.png), [đồng hồ giữ chỗ](docs/screenshots/hold.png) và [giao diện điện thoại](docs/screenshots/intro-mobile.png).
+- **Thử một lượt đặt** theo [hướng dẫn chạy cục bộ](#chạy-thử) hoặc xem [màn hình chọn giờ](docs/screenshots/desktop.png), [đồng hồ giữ chỗ](docs/screenshots/hold.png) và [bộ lọc giờ trên điện thoại](docs/screenshots/planner-mobile.png).
 - **Đọc logic giữ chỗ** để xem cách kiểm tra sức chứa và lưu lượt đặt trong cùng transaction. Ca kiểm thử đồng thời gửi 20 yêu cầu tranh bốn chỗ. [BookingService](src/main/java/vn/yang/slots/BookingService.java) · [ReservationsTest](src/test/java/vn/yang/slots/ReservationsTest.java)
 - **Xem thay đổi đang duyệt** về thao tác giữ chỗ trên điện thoại và cách duy trì tiêu điểm bàn phím khi danh sách giờ cập nhật. [PR #5](https://github.com/nguyenhonggiang2407/YangSlots/pull/5) · [PR #4](https://github.com/nguyenhonggiang2407/YangSlots/pull/4)
 
@@ -56,7 +56,7 @@ CI cũng lưu JAR trong artifact **yangslots-application** của lần chạy đ
 ## Các luồng đã triển khai
 
 - **Tài nguyên:** tên và sức chứa 1–20 đơn vị, tối đa 10 tài nguyên/workspace. Sức chứa cố định sau khi tạo. Đổi tên/xóa có kiểm tra version; xóa cascade các lượt đặt.
-- **Lịch theo ngày:** chọn tài nguyên, ngày, thời lượng và số đơn vị; xem các giờ bắt đầu theo bước 15 phút. Hiển thị tại Việt Nam, UTC+7; API lưu thời điểm chuẩn UTC.
+- **Lịch theo ngày:** chọn tài nguyên, ngày, thời lượng và số đơn vị. Lọc giờ bắt đầu theo buổi và xem số khung còn đủ chỗ. Trên điện thoại, giờ đã chọn và nút tiếp tục giữ chỗ hiện cùng lưới giờ. Giao diện dùng giờ Việt Nam, UTC+7. API lưu thời điểm chuẩn UTC.
 - **Giữ chỗ năm phút:** giữ chỗ chiếm sức chứa ngay. Xác nhận trước hạn chuyển thành CONFIRMED; hết hạn được hiển thị EXPIRED và tự ngừng chiếm chỗ khi đọc/tạo yêu cầu tiếp theo.
 - **Không cần tác vụ nền để trả chỗ:** tính hiệu lực bằng clock và hold_until trong truy vấn, kể cả sau khi khởi động lại.
 - **Kiểm soát đồng thời:** transaction READ_COMMITTED khóa hàng workspace trước mọi mutation, rồi kiểm tra sức chứa và ghi reservation/idempotency cùng transaction. Các workspace khác có hàng khóa riêng.
@@ -190,7 +190,7 @@ CI dùng JDK 17 và Node.js 24, build JAR, chạy các bộ test, chụp giao di
 
 <details><summary>Giao diện điện thoại</summary>
 
-<img src="docs/screenshots/mobile.png" width="390" alt="YangSlots mobile">
+<img src="docs/screenshots/planner-mobile.png" width="390" alt="Lịch buổi chiều và thanh giữ chỗ trên điện thoại">
 
 </details>
 
