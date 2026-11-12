@@ -8,15 +8,17 @@
 
 Repository độc lập được tách từ nhánh [yangslots của DTDD](https://github.com/nguyenhonggiang2407/DTDD/tree/yangslots), giữ nguyên lịch sử và nguồn kế thừa. Nhánh cũ vẫn được giữ; xem [biên bản chuyển repository](docs/repository-migration.md). Chưa triển khai website công khai.
 
+## Xem nhanh dự án
+
+- **Thử một lượt đặt** theo [hướng dẫn chạy cục bộ](#chạy-thử) hoặc xem [màn hình chọn giờ](docs/screenshots/desktop.png), [đồng hồ giữ chỗ](docs/screenshots/hold.png) và [giao diện điện thoại](docs/screenshots/intro-mobile.png).
+- **Đọc logic giữ chỗ** để xem cách kiểm tra sức chứa và lưu lượt đặt trong cùng transaction. Ca kiểm thử đồng thời gửi 20 yêu cầu tranh bốn chỗ. [BookingService](src/main/java/vn/yang/slots/BookingService.java) · [ReservationsTest](src/test/java/vn/yang/slots/ReservationsTest.java)
+- **Xem thay đổi đang duyệt** về thao tác giữ chỗ trên điện thoại và cách duy trì tiêu điểm bàn phím khi danh sách giờ cập nhật. [PR #5](https://github.com/nguyenhonggiang2407/YangSlots/pull/5) · [PR #4](https://github.com/nguyenhonggiang2407/YangSlots/pull/4)
+
 ![Màn hình bắt đầu của YangSlots trên desktop](docs/screenshots/intro-desktop.png)
-
-[Giao diện đặt lịch trên desktop](docs/screenshots/desktop.png) · [Màn hình bắt đầu trên điện thoại](docs/screenshots/intro-mobile.png)
-
-Ảnh phòng họp ở màn hình bắt đầu là ảnh minh họa của [Aheed Baithul Nafia trên Pexels](https://www.pexels.com/photo/conference-table-and-chairs-in-an-empty-office-17739892/) theo [giấy phép Pexels](https://www.pexels.com/license/). Ứng dụng phục vụ bản WebP 1000 × 750 đã giảm kích thước từ chính máy chủ. Lịch mẫu và tên phòng trong ứng dụng là dữ liệu giả lập.
 
 ## Chạy thử
 
-Cần **JDK 17 trở lên**. Maven Wrapper đã có trong mã nguồn.
+Cần **JDK 17 trở lên**. Maven Wrapper đã có trong mã nguồn. Nếu xem bản đang duyệt, chuyển sang nhánh của PR trước khi chạy Maven Wrapper.
 
 ```sh
 git clone https://github.com/nguyenhonggiang2407/YangSlots.git
@@ -24,13 +26,15 @@ cd YangSlots
 ./mvnw spring-boot:run
 ```
 
-Windows:
+Trên Windows, chạy lệnh sau trong thư mục đã clone.
 
-```bat
-mvnw.cmd spring-boot:run
+```powershell
+.\mvnw.cmd spring-boot:run
 ```
 
-Mở **http://127.0.0.1:3150**. Chọn **Thử lịch mẫu** để tạo hai tài nguyên và ba lịch đặt giả lập cho ngày mai. Với Phòng họp Lotus, 09:00–10:00 đã đặt. Chọn 10:00 để thử giữ chỗ rồi xác nhận. Trên màn hình hẹp, **Tiếp tục giữ chỗ** chuyển tiêu điểm thẳng tới biểu mẫu.
+1. Mở `http://127.0.0.1:3150` rồi chọn **Thử lịch mẫu**. Ứng dụng tạo hai tài nguyên và ba lượt đặt giả lập cho ngày mai, sau đó mở **Phòng họp Lotus**.
+2. Chọn **10:00**. Trên màn hình hẹp, chọn **Tiếp tục giữ chỗ** để chuyển đến biểu mẫu. Nhập tên lượt đặt và bấm **Giữ chỗ 5 phút**.
+3. Bấm **Xác nhận đặt** trước khi đồng hồ hết giờ. Đóng hộp thoại rồi chọn **Lịch ICS** để tải `yangslots.ics`.
 
 Hoặc dùng Docker, không cần cài JDK/Maven trên máy:
 
@@ -222,6 +226,8 @@ CI dùng JDK 17 và Node.js 24, build JAR, chạy các bộ test, chụp giao di
 Tham khảo [hotel-booking-crew/kayak.py](https://github.com/Trinhvhao/ai-engineering-hub/blob/86dc1699fe036e5cd21ed7d3c57419a7fc3c844b/hotel-booking-crew/kayak.py), trong fork của Trinhvhao, dự án gốc [patchy631/ai-engineering-hub](https://github.com/patchy631/ai-engineering-hub). Mã này tạo URL tìm khách sạn theo địa điểm/ngày/số khách; bản gốc được giữ tại upstream/hotel_search.py cùng MIT gốc.
 
 YangSlots mới triển khai phần giữ chỗ, sức chứa, private sessions, transaction, export và UI. Không nhận là tác giả mã tham khảo hay toàn bộ dự án CrewAI. Phân định tại [NOTICE.md](NOTICE.md).
+
+Ảnh phòng họp ở màn hình bắt đầu là ảnh minh họa của [Aheed Baithul Nafia trên Pexels](https://www.pexels.com/photo/conference-table-and-chairs-in-an-empty-office-17739892/) theo [giấy phép Pexels](https://www.pexels.com/license/). Ứng dụng phục vụ bản WebP 1000 × 750 đã giảm kích thước từ chính máy chủ. Lịch mẫu và tên phòng trong ứng dụng là dữ liệu giả lập.
 
 Maven Wrapper do Spring Initializr sinh, giữ Apache-2.0/NOTICE trong LICENSES/. Các dependency giữ giấy phép riêng. [Tài liệu Spring Boot](https://docs.spring.io/spring-boot/system-requirements.html).
 
