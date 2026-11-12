@@ -2,6 +2,8 @@
 
 [![YangSlots checks](https://github.com/nguyenhonggiang2407/YangSlots/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nguyenhonggiang2407/YangSlots/actions/workflows/ci.yml)
 
+[**Mở demo YangSlots**](https://yangslots-demo.onrender.com) và bấm **Thử lịch mẫu** để đặt thử.
+
 **Chọn tài nguyên → chọn giờ → giữ chỗ năm phút → xác nhận → xuất lịch.**
 
 Ứng dụng thực hành **Java Backend / Full-stack** của **Nguyễn Hồng Giang (Yang)**. Java 17, Spring Boot 4.1.2, Spring JDBC, Bean Validation và H2 dạng tệp. Giao diện JavaScript thuần, tiếng Việt.
