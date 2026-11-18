@@ -38,6 +38,8 @@ Trên Windows, chạy lệnh sau trong thư mục đã clone.
 2. Chọn **10:00**. Trên màn hình hẹp, chọn **Tiếp tục giữ chỗ** để chuyển đến biểu mẫu. Nhập tên lượt đặt và bấm **Giữ chỗ 5 phút**.
 3. Bấm **Xác nhận đặt** trước khi đồng hồ hết giờ. Đóng hộp thoại rồi chọn **Lịch ICS** để tải `yangslots.ics`.
 
+Lịch mẫu nằm trong workspace riêng theo cookie và không cần tài khoản. Dùng Tab để tới ô giờ rồi nhấn Enter. Ô đã chọn giữ focus. Hộp lượt đặt có tên và trạng thái để công nghệ hỗ trợ đọc, sau khi xác nhận hoặc hủy thì focus chuyển đến nút Đóng.
+
 Hoặc dùng Docker, không cần cài JDK/Maven trên máy:
 
 ```sh
